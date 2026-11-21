@@ -1,10 +1,14 @@
-package ru.kostyukov;
+package ru.kostyukov.einstein;
 
 import com.github.javabdd.BDD;
 import com.github.javabdd.BDD.AllSatIterator;
 import com.github.javabdd.BDDFactory;
 
 public class App {
+  private static final int N = 9;
+  private static final int M = 4;
+  private static final int T = 4;
+
   public static void main(String[] args) {
     callBDD();
   }
@@ -46,5 +50,9 @@ public class App {
     }
 
     factory.done();
+  }
+
+  private int varIndex(int i, int k, int t) {
+    return T * M * i + T * k + t;
   }
 }

@@ -1,0 +1,83 @@
+package ru.kostyukov.einstein;
+
+import com.github.javabdd.BDD;
+import com.github.javabdd.BDDFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class BddModelTest {
+
+    private BDDFactory factory;
+
+    @BeforeEach
+    void setUp() {
+        factory = BDDFactory.init("java", 200_000, 20_000);
+    }
+
+    @AfterEach
+    void tearDown() {
+        factory.done();
+    }
+
+    @Test
+    void calculatesBitWidthAndUniqueVarIndices() {
+        BddModel model = new BddModel(factory, 9, 4);
+        assertEquals(4, model.bitWidth());
+        assertEquals(144, model.varCount());
+
+        Set<Integer> seen = new HashSet<>();
+        for (int obj = 0; obj < 9; obj++) {
+            for (int prop = 0; prop < 4; prop++) {
+                for (int bit = 0; bit < 4; bit++) {
+                    int idx = model.varIndex(obj, prop, bit);
+                    assertTrue(idx >= 0 && idx < 144, "Индекс вне диапазона: " + idx);
+                    assertTrue(seen.add(idx), "Дубликат индекса: " + idx);
+                }
+            }
+        }
+    }
+
+    @Test
+    void baseConstraintsCountOnSmallScale() {
+        // N=3, M=2: (3!)^2 = 36 допустимых раскладок
+        BddModel model = new BddModel(factory, 3, 2);
+        BDD base = model.buildBaseConstraints();
+        assertEquals(36.0, base.satCount(), 1e-6);
+        base.free();
+    }
+
+    @Test
+    void baseConstraintsRejectDuplicateAndOutOfRangeValues() {
+        BddModel model = new BddModel(factory, 3, 2);
+        BDD base = model.buildBaseConstraints();
+
+        // Нарушение Типа 5: два объекта имеют одинаковое значение свойства 0
+        BDD duplicate = base.and(model.p(0, 0, 1)).andWith(model.p(0, 1, 1));
+        assertEquals(0.0, duplicate.satCount(), 1e-6);
+        duplicate.free();
+
+        // Нарушение Типа 6: значение 3 не входит в диапазон 0..2 (но помещается в 2 бита)
+        BDD outOfRange = base.and(model.p(0, 0, 3));
+        assertEquals(0.0, outOfRange.satCount(), 1e-6);
+        outOfRange.free();
+
+        base.free();
+    }
+
+    @Test
+    void baseConstraintsScaleTo9x4WithoutExploding() {
+        // Проверка порядка переменных для полного размера N=9, M=4: (9!)^4
+        BddModel model = new BddModel(factory, 9, 4);
+        BDD base = model.buildBaseConstraints();
+        double expected = Math.pow(362_880.0, 4);
+        assertEquals(expected, base.satCount(), expected * 1e-9);
+        base.free();
+    }
+}
