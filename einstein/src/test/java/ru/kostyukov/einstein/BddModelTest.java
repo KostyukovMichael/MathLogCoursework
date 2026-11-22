@@ -49,7 +49,7 @@ class BddModelTest {
         // N=3, M=2: (3!)^2 = 36 допустимых раскладок
         BddModel model = new BddModel(factory, 3, 2);
         BDD base = model.buildBaseConstraints();
-        assertEquals(36.0, base.satCount(), 1e-6);
+        assertEquals(36.0, base.satCount().doubleValue(), 1e-6);
         base.free();
     }
 
@@ -60,12 +60,12 @@ class BddModelTest {
 
         // Нарушение Типа 5: два объекта имеют одинаковое значение свойства 0
         BDD duplicate = base.and(model.p(0, 0, 1)).andWith(model.p(0, 1, 1));
-        assertEquals(0.0, duplicate.satCount(), 1e-6);
+        assertEquals(0.0, duplicate.satCount().doubleValue(), 1e-6);
         duplicate.free();
 
         // Нарушение Типа 6: значение 3 не входит в диапазон 0..2 (но помещается в 2 бита)
         BDD outOfRange = base.and(model.p(0, 0, 3));
-        assertEquals(0.0, outOfRange.satCount(), 1e-6);
+        assertEquals(0.0, outOfRange.satCount().doubleValue(), 1e-6);
         outOfRange.free();
 
         base.free();
@@ -77,7 +77,7 @@ class BddModelTest {
         BddModel model = new BddModel(factory, 9, 4);
         BDD base = model.buildBaseConstraints();
         double expected = Math.pow(362_880.0, 4);
-        assertEquals(expected, base.satCount(), expected * 1e-9);
+        assertEquals(expected, base.satCount().doubleValue(), expected * 1e-9);
         base.free();
     }
 }
