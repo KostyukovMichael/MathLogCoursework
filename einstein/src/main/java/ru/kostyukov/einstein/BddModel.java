@@ -17,6 +17,10 @@ public class BddModel {
     factory.setVarNum(varCount());
   }
 
+  public BDD one() {
+    return factory.one();
+  }
+
   /**
    * Вычисляет T.
    *
@@ -118,5 +122,13 @@ public class BddModel {
   public int varIndex(int object, int prop, int bit) {
     int T = bitWidth();
     return T * n * prop + T * object + bit;
+  }
+
+  public int getN() {
+    return n;
+  }
+
+  public void free() {
+    this.factory.done();
   }
 }

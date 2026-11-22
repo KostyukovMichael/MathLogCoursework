@@ -1,3 +1,7 @@
 #!/bin/bash
 
-rm repomix_output.xml test_log.txt
+rm repomix-output.xml test_log.txt
+
+cd ./einstein/
+
+mvn clean

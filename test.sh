@@ -2,4 +2,4 @@
 
 cd einstein/
 
-mvn clean test > test_log.txt
+mvn clean test > ../test_log.txt

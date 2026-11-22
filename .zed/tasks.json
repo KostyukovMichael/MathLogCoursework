@@ -1,0 +1,92 @@
+[
+  {
+    "label": "clean",
+    "command": "bash",
+    "args": [
+      "clean.sh"
+    ],
+    "env": {
+      "MSYSTEM": "UCRT64",
+      "CHERE_INVOKING": "1",
+      "MSYS2_PATH_TYPE": "inherit"
+    },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "never",
+    "reveal_target": "dock",
+    "hide": "on_success",
+    "shell": {
+      "with_arguments": {
+        "program": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": [
+          "--login",
+          "-i"
+        ]
+      }
+    },
+    "show_summary": true,
+    "show_command": true,
+    "save": "none",
+  },
+  {
+    "label": "test",
+    "command": "bash",
+    "args": [
+      "test.sh"
+    ],
+    "env": {
+      "MSYSTEM": "UCRT64",
+      "CHERE_INVOKING": "1",
+      "MSYS2_PATH_TYPE": "inherit"
+    },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "reveal_target": "dock",
+    "hide": "never",
+    "shell": {
+      "with_arguments": {
+        "program": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": [
+          "--login",
+          "-i"
+        ]
+      }
+    },
+    "show_summary": true,
+    "show_command": true,
+    "save": "none",
+  },
+  {
+    "label": "repo",
+    "command": "bash",
+    "args": [
+      "repo.sh"
+    ],
+    "env": {
+      "MSYSTEM": "UCRT64",
+      "CHERE_INVOKING": "1",
+      "MSYS2_PATH_TYPE": "inherit"
+    },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "never",
+    "reveal_target": "dock",
+    "hide": "always",
+    "shell": {
+      "with_arguments": {
+        "program": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": [
+          "--login",
+          "-i"
+        ]
+      }
+    },
+    "show_summary": true,
+    "show_command": true,
+    "save": "none",
+  }
+]
