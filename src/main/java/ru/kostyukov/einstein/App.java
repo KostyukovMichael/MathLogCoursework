@@ -21,14 +21,49 @@ public class App {
     final SolutionPrinter printer = new AliceSolutionPrinter(model, holder);
     final Grid grid = new Grid(rows, cols);
 
-    solve(model, printer, grid, false);
-    solve(model, printer, grid, true);
+    solveWithoutGlue(model, printer, grid);
+    solveWithGlue(model, printer, grid);
 
     model.free();
   }
 
-  private static void solve(BddModel model, SolutionPrinter printer, Grid grid, boolean glued) {
-    final ConstraintBuilder constraintBuilder = new ConstraintBuilder(model, grid, glued);
+  // 21 + 2 ограничения для 12 решений без склейки
+  private static void solveWithoutGlue(BddModel model, SolutionPrinter printer, Grid grid) {
+    final ConstraintBuilder constraintBuilder = new ConstraintBuilder(model, grid, false);
+
+    BDD result = applyCommonConstraints(model, grid, constraintBuilder);
+
+    result = result.andWith(constraintBuilder.type1(3, 0, 3));
+    result = result.andWith(constraintBuilder.type1(1, 8, 0));
+
+    System.out.println("===Без склейки===\n" + result.satCount());
+    if (result.satCount().intValue() <= 20) {
+      printer.printSolutions(result.allsat());
+    }
+
+    result.free();
+  }
+
+  private static void solveWithGlue(BddModel model, SolutionPrinter printer, Grid grid) {
+    final ConstraintBuilder constraintBuilder = new ConstraintBuilder(model, grid, true);
+
+    BDD result = applyCommonConstraints(model, grid, constraintBuilder);
+
+    result = result.andWith(constraintBuilder.type1(1, 8, 0));
+    result = result.andWith(constraintBuilder.type3(0, 2, 1, 8, true));
+    result = result.andWith(constraintBuilder.type4(1, 6, 2, 3));
+
+    System.out.println("===Со склейкой===\n" + result.satCount());
+    if (result.satCount().intValue() <= 20) {
+      printer.printSolutions(result.allsat());
+    }
+
+    result.free();
+  }
+
+  // 21 Ограничения по варианту
+  private static BDD applyCommonConstraints(
+      BddModel model, Grid grid, ConstraintBuilder constraintBuilder) {
 
     BDD result = model.one();
 
@@ -64,15 +99,6 @@ public class App {
     result = result.andWith(constraintBuilder.type4(3, 1, 3, 6));
     result = result.andWith(constraintBuilder.type4(0, 6, 0, 4));
 
-    // При такой расстановке получается 288 решений, поэтому пришлось добавить еще 2 ограничения
-    result = result.andWith(constraintBuilder.type1(3, 0, 3));
-    result = result.andWith(constraintBuilder.type1(1, 8, 0));
-
-    System.out.println(result.satCount());
-    if (result.satCount().intValue() <= 50) {
-      printer.printSolutions(result.allsat());
-    }
-
-    result.free();
+    return result;
   }
 }

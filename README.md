@@ -128,7 +128,42 @@ c = i mod 3
 
 ### Дополнительные ограничения
 
+#### Без склейки
+
 | № | Тип | Естественная формулировка | В переменных |
 | - | - | - | - |
 | 1 | 1 | Слева сверху пьют чай из кружки без дна | (prop = 3, object = 0, value = 3) |
 | 2 | 1 | На 8 месте пьют дарджилинг | (prop = 1, object = 8, value = 0) |
+
+#### Со склейкой
+
+| № | Тип | Естественная формулировка | В переменных |
+| - | - | - | - |
+| 1 | 1 | На 8 месте пьют дарджилинг | (prop = 1, object = 8, value = 0) |
+| 2 | 3 | Мартовский заяц сидит справа снизу от столика с ромашковым чаем | (prop1 = 0, value1 = 2, prop2 = 1, value = 8, right = true) |
+| 3 | 4 | Анчан пьют рядом снизу от столика, за которым едят пудинг | (prop1 = 1, value1 = 6, prop2 = 2, value2 = 3) |
+
+## Архитектура классов
+
+```mermaid
+flowchart TD
+  App([App\nТочка входа])
+  App --> BddModel
+  App --> ConstraintBuilder
+  App --> SolutionPrinter
+
+  ConstraintBuilder[ConstraintBuilder\nНакладывает ограничения 1-4 типа]
+  ConstraintBuilder --> BddModel
+  ConstraintBuilder --> Grid
+
+  BddModel[BddModel\nПредоставляет ограничения 5 и 6 типа, а также базовую функцию p]
+  Grid[Grid\nОпределяет индекс левого нижнего или правого нижнего соседа для произвольной таблицы]
+
+  SolutionPrinter{{SolutionPrinter}}
+  SolutionPrinter -.-> AliceSolutionPrinter
+  AliceSolutionPrinter[AliceSolutionPrinter\nНаходит и печатает решения на естественном языке]
+  AliceSolutionPrinter --> DataHolder
+
+  DataHolder{{DataHolder}} -.-> AliceDataHolder
+  AliceDataHolder[AliceDataHolder\nСопоставляет номера свойств и значений их естественным расшифровкам]
+```
