@@ -128,6 +128,10 @@ public class BddModel {
     return n;
   }
 
+  public int getM() {
+    return m;
+  }
+
   public void free() {
     this.factory.done();
   }
